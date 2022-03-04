@@ -9,12 +9,18 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    var movia = [APIMovie]()
+    var cast = [Cast]()
+    
     @IBOutlet var collectionView: UICollectionView!
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        NetworkManager.shared.fetchDataMovie { casttt in
+            self.cast = casttt.cast
+            self.collectionView.reloadData()
+        }
     }
     
     
@@ -25,7 +31,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        return cast.count
     }
     
     
@@ -35,7 +41,9 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CollectionViewCell
         
-        cell.backgroundColor = .darkGray
+        let casts = cast[indexPath.row]
+        cell.configure(with: casts)
+     
         
         return cell
     }
